@@ -4,6 +4,8 @@ from tkinter import *
 class VaalOrbCalculator:
     def __init__(self, root, logger):
 
+        self.font = ("Comic Sans MS", 11, "bold")
+
         self.root = root
         self.fixed_width = 12
         self.y_padding = 2
@@ -17,6 +19,8 @@ class VaalOrbCalculator:
         }
         self.log_path = "vaal_orb_results.txt"
 
+        self.vaal_orb_grid = None
+        self.div_cost_label = None
         self.div_cost_input = None
         self.gem_name_input = None
         self.gem_cost_input = None
@@ -32,72 +36,81 @@ class VaalOrbCalculator:
         self.init_ui()
 
     def init_ui(self):
-        self.div_cost_label = Label(self.root, bg="darkgrey", text="Divine cost")
+        self.vaal_orb_grid = Label(self.root, bg="darkgrey", font=self.font, text="Vaal Orb calculator")
+        self.vaal_orb_grid.grid(column=0, row=0)
+        self.vaal_orb_grid.config()
+
+        self.div_cost_label = Label(self.root, bg="darkgrey", font=self.font, text="Divine cost")
         self.div_cost_label.grid(column=1, row=0)
 
-        self.div_cost_input = Entry(self.root, bg="darkgrey", width=10)
+        self.div_cost_input = Entry(self.root, bg="darkgrey", font=self.font, width=10)
+        self.div_cost_input.insert(0, "100")
         self.div_cost_input.grid(column=2, row=0)
 
-        self.col_title_1 = Label(self.root, bg="darkgrey", text="Gem name")
+        self.col_title_1 = Label(self.root, bg="darkgrey", font=self.font, text="Gem name")
         self.col_title_1.grid(column=0, row=1)
 
-        self.gem_cost_title = Label(self.root, bg="darkgrey", text="Gem cost")
+        self.gem_cost_title = Label(self.root, bg="darkgrey", font=self.font, text="Gem cost")
         self.gem_cost_title.grid(column=1, row=1)
 
-        self.lvl_up_title = Label(self.root, bg="darkgrey", fg="green", text="+1 val")
+        self.lvl_up_title = Label(self.root, bg="darkgrey", font=self.font, fg="green", text="+1 val")
         self.lvl_up_title.grid(column=2, row=1)
 
-        self.lvl_down_title = Label(self.root, bg="darkgrey", fg="red", text="-1 val")
+        self.lvl_down_title = Label(self.root, bg="darkgrey", font=self.font, fg="red", text="-1 val")
         self.lvl_down_title.grid(column=3, row=1)
 
-        self.qual_up_title = Label(self.root, bg="darkgrey", fg="green", text="+qual val")
+        self.qual_up_title = Label(self.root, bg="darkgrey", font=self.font, fg="green", text="+qual val")
         self.qual_up_title.grid(column=4, row=1)
 
-        self.qual_down_title = Label(self.root, bg="darkgrey", fg="red", text="-qual val")
+        self.qual_down_title = Label(self.root, bg="darkgrey", font=self.font, fg="red", text="-qual val")
         self.qual_down_title.grid(column=5, row=1)
 
-        self.no_change_title = Label(self.root, bg="darkgrey", text="no change val")
+        self.no_change_title = Label(self.root, bg="darkgrey", font=self.font, text="no change val")
         self.no_change_title.grid(column=6, row=1)
 
-        self.result_title = Label(self.root, bg="darkgrey", text="Avg return (c)")
+        self.result_title = Label(self.root, bg="darkgrey", font=self.font, text="Avg return (c)")
         self.result_title.grid(column=7, row=1)
 
-        self.gem_name_input = Entry(self.root, bg="lightgray", width=self.fixed_width)
+        self.gem_name_input = Entry(self.root, bg="lightgray", font=self.font, width=self.fixed_width)
         self.gem_name_input.grid(column=0, row=2, pady=self.y_padding, padx=self.x_padding)
 
-        self.gem_cost_input = Entry(self.root, bg="lightgray", width=self.fixed_width)
+        self.gem_cost_input = Entry(self.root, bg="lightgray", font=self.font, width=self.fixed_width)
         self.gem_cost_input.grid(column=1, row=2, pady=self.y_padding, padx=self.x_padding)
 
-        self.lvl_up_input = Entry(self.root, bg="lightgray", width=self.fixed_width)
+        self.lvl_up_input = Entry(self.root, bg="lightgray", font=self.font, width=self.fixed_width)
         self.lvl_up_input.grid(column=2, row=2, pady=self.y_padding, padx=self.x_padding)
 
-        self.lvl_down_input = Entry(self.root, bg="lightgray", width=self.fixed_width)
+        self.lvl_down_input = Entry(self.root, bg="lightgray", font=self.font, width=self.fixed_width)
         self.lvl_down_input.grid(column=3, row=2, pady=self.y_padding, padx=self.x_padding)
 
-        self.qual_up_input = Entry(self.root, bg="lightgray", width=self.fixed_width)
+        self.qual_up_input = Entry(self.root, bg="lightgray", font=self.font, width=self.fixed_width)
         self.qual_up_input.grid(column=4, row=2, pady=self.y_padding, padx=self.x_padding)
 
-        self.qual_down_input = Entry(self.root, bg="lightgray", width=self.fixed_width)
+        self.qual_down_input = Entry(self.root, bg="lightgray", font=self.font, width=self.fixed_width)
         self.qual_down_input.grid(column=5, row=2, pady=self.y_padding, padx=self.x_padding)
 
-        self.no_change_input = Entry(self.root, bg="lightgray", width=self.fixed_width)
+        self.no_change_input = Entry(self.root, bg="lightgray", font=self.font, width=self.fixed_width)
         self.no_change_input.grid(column=6, row=2, pady=self.y_padding, padx=self.x_padding)
 
-        self.result = Label(self.root, text="", bg="lightgray", width=self.fixed_width)
+        self.result = Label(self.root, text="", bg="lightgray", font=self.font, width=self.fixed_width)
         self.result.grid(column=7, row=2, pady=self.y_padding, padx=self.x_padding)
 
-        self.btn = Button(self.root, text="Calculate", fg="black", command=self.calculateVaalOrb)
+        self.btn = Button(self.root, text="Calculate", fg="black", font=self.font, command=self.calculateVaalOrb)
         self.btn.grid(column=8, row=2, padx=self.x_padding, pady=self.y_padding)
 
     def calculateVaalOrb(self):
-        res = -int(self.gem_cost_input.get())
-        res += int(self.lvl_up_input.get()) * self.vaal_orb_table["lvl_up"]
-        res += int(self.lvl_down_input.get()) * self.vaal_orb_table["lvl_down"]
-        res += int(self.qual_up_input.get()) * self.vaal_orb_table["qual_up"]
-        res += int(self.qual_down_input.get()) * self.vaal_orb_table["qual_down"]
-        res += int(self.no_change_input.get()) * self.vaal_orb_table["no_change"]
-        res = res * int(self.div_cost_input.get())
-        self.result.config(text=res)
+        try:
+            res = -int(self.gem_cost_input.get())
+            res += int(self.lvl_up_input.get()) * self.vaal_orb_table["lvl_up"]
+            res += int(self.lvl_down_input.get()) * self.vaal_orb_table["lvl_down"]
+            res += int(self.qual_up_input.get()) * self.vaal_orb_table["qual_up"]
+            res += int(self.qual_down_input.get()) * self.vaal_orb_table["qual_down"]
+            res += int(self.no_change_input.get()) * self.vaal_orb_table["no_change"]
+            res = res * int(self.div_cost_input.get())
+            self.result.config(text=res)
+        except:
+            self.result.config(text="Invalid input.")
+            return
 
         # format: gem_name, gem cost, lvl_up, lvl_down, qual_up, qual_down, no_change, result
         log_string = self.gem_name_input.get() + "," + self.gem_cost_input.get() + ", " + self.lvl_up_input.get() + ", " + self.lvl_down_input.get() + ", " + self.qual_up_input.get() + ", " + self.qual_down_input.get() + ", " + self.no_change_input.get() + ", " + str(
