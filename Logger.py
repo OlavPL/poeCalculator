@@ -3,11 +3,42 @@ from tkinter import Label, Frame
 
 
 class Logger:
-    def __init__(self, root):
+    log_setup = {
+        "vaal_orb": {
+            "log_path": "vaal_orb_log.txt",
+            "log_labels": [
+                "Gem name",
+                "Gem cost",
+                "lvl up",
+                "lvl down",
+                "qual up",
+                "qual down",
+                "no change",
+                "avg return (c)",
+                "Last seen"
+            ]
+        },
+        "awakened_level": {
+            "log_path": "Awakened_leveling_log.txt",
+            "log_labels": [
+                "Gem name",
+                "Gem cost",
+                "Beast cost",
+                "Quality cost",
+                "lvl 5 cost",
+                "",
+                "",
+                "avg return (c)",
+                "Last seen"
+            ]
+        }
+    }
+
+    def __init__(self, root, log_path="vaal_orb_log.txt"):
         self.root = root
         self.log_labels = []
         self.font = ("Comic Sans MS", 11, "bold")
-        self.topPadding = (30, 5)
+        self.topPadding = (80, 5)
 
         self.log_name = Label(self.root, text="Gem name", bg="black", fg="gold", font=self.font)
         self.log_name.grid(column=1, row=5, pady=self.topPadding)
@@ -35,8 +66,9 @@ class Logger:
 
         self.last_update = Label(self.root, text="Last seen", bg="black", fg="gold", font=self.font)
         self.last_update.grid(column=9, row=5, pady=self.topPadding)
+        self.current_log = log_path
 
-    def readLog(self, file_name="vaal_orb_results.txt"):
+    def readLog(self, file_name="vaal_orb_log.txt"):
         try:
             f = open(file_name, "r")
             lines = f.readlines()
@@ -72,3 +104,41 @@ class Logger:
                 self.log_labels.append(separator)
         except:
             return
+
+    def forget(self):
+        for label in self.log_labels:
+            label.grid_forget()
+        self.log_labels.clear()
+
+        # Forgets padding aswell when doing this
+        # self.log_name.grid_forget()
+        # self.log_cost.grid_forget()
+        # self.log_lvl_up.grid_forget()
+        # self.log_lvl_down.grid_forget()
+        # self.log_qual_up.grid_forget()
+        # self.log_qual_down.grid_forget()
+        # self.log_no_change.grid_forget()
+        # self.log_result.grid_forget()
+        # self.last_update.grid_forget()
+
+    def init_vaal_orb_log(self):
+        self.log_name.config(text=self.log_setup["vaal_orb"]["log_labels"][0])
+        self.log_cost.config(text=self.log_setup["vaal_orb"]["log_labels"][1])
+        self.log_lvl_up.config(text=self.log_setup["vaal_orb"]["log_labels"][2])
+        self.log_lvl_down.config(text=self.log_setup["vaal_orb"]["log_labels"][3])
+        self.log_qual_up.config(text=self.log_setup["vaal_orb"]["log_labels"][4])
+        self.log_qual_down.config(text=self.log_setup["vaal_orb"]["log_labels"][5])
+        self.log_no_change.config(text=self.log_setup["vaal_orb"]["log_labels"][6])
+        self.log_result.config(text=self.log_setup["vaal_orb"]["log_labels"][7])
+        self.last_update.config(text=self.log_setup["vaal_orb"]["log_labels"][8])
+
+    def init_awakened_level_log(self):
+        self.log_name.config(text=self.log_setup["awakened_level"]["log_labels"][0])
+        self.log_cost.config(text=self.log_setup["awakened_level"]["log_labels"][1])
+        self.log_lvl_up.config(text=self.log_setup["awakened_level"]["log_labels"][2])
+        self.log_lvl_down.config(text=self.log_setup["awakened_level"]["log_labels"][3])
+        self.log_qual_up.config(text=self.log_setup["awakened_level"]["log_labels"][4])
+        self.log_qual_down.config(text=self.log_setup["awakened_level"]["log_labels"][5])
+        self.log_no_change.config(text=self.log_setup["awakened_level"]["log_labels"][6])
+        self.log_result.config(text=self.log_setup["awakened_level"]["log_labels"][7])
+        self.last_update.config(text=self.log_setup["awakened_level"]["log_labels"][8])

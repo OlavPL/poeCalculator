@@ -1,50 +1,44 @@
 import datetime
 from tkinter import *
 
-class VaalOrbCalculator:
-    log_path = "vaal_orb_log.txt"
-    background_image_path = "res/atziri_wallpaper_wide.png"
-    vaal_orb_table = {
-        "lvl_up": 0.125,
-        "lvl_down": 0.125,
-        "qual_up": 0.125,
-        "qual_down": 0.125,
-        "no_change": 0.5
-    }
 
-    def __init__(self, root, logger, font=("Comic Sans MS", 11, "bold")):
+class AwakenedLevelingCalculator:
+    log_path = "Awakened_leveling_log.txt"
+    background_image_path = "res/AwaLevelBackground_test.png"
 
-        self.font = font
+    def __init__(self, root, logger):
+
+        self.font = ("Comic Sans MS", 11, "bold")
+
         self.root = root
         self.fixed_width = 12
         self.y_padding = 2
         self.x_padding = 4
 
-        self.vaal_orb_grid = None
+        self.awakened_grid = None
         self.div_cost_label = None
         self.div_cost_input = None
         self.gem_name_label = None
         self.gem_name_input = None
         self.gem_cost_label = None
         self.gem_cost_input = None
-        self.lvl_up_label = None
-        self.lvl_up_input = None
-        self.lvl_down_label = None
-        self.lvl_down_input = None
-        self.qual_up_label = None
-        self.qual_up_input = None
-        self.qual_down_label = None
-        self.qual_down_input = None
-        self.no_change_label = None
-        self.no_change_input = None
+        self.beast_cost_label = None
+        self.beast_cost_input = None
+        self.qual_cost_label = None
+        self.qual_cost_input = None
+        self.maxlvl_value_label = None
+        self.maxlvl_value_input = None
+        self.result_label = None
         self.result = None
         self.btn = None
         self.logger = logger
-        self.logger.current_log = "vaal_orb"
+        self.logger.current_log = "awakened_level"
 
         self.button_images = []
         self.isHoveringButton = False
         self.topPadding = (20, 5)
+        self.empty_cells = 2
+        self.filler_cells = []
 
         self.init_ui()
 
@@ -56,9 +50,9 @@ class VaalOrbCalculator:
         photo = PhotoImage(file="res/buttonStock1h.png")
         self.button_images.append(photo.subsample(2, 2))
 
-        self.vaal_orb_grid = Label(self.root, bg="black", fg="gold", font=self.font, text="Vaal Orb calculator", width=self.fixed_width+4)
-        self.vaal_orb_grid.grid(column=1, row=0, pady=self.topPadding, padx=self.x_padding)
-        self.vaal_orb_grid.config()
+        self.awakened_grid = Label(self.root, bg="black", fg="gold", font=self.font, text="Awakened Gem lvl", width=self.fixed_width+4)
+        self.awakened_grid.grid(column=1, row=0, pady=self.topPadding, padx=self.x_padding)
+        self.awakened_grid.config()
 
         self.div_cost_label = Label(self.root, bg="black", fg="gold", font=self.font, text="Divine cost")
         self.div_cost_label.grid(column=2, row=0, pady=self.topPadding)
@@ -73,20 +67,14 @@ class VaalOrbCalculator:
         self.gem_cost_label = Label(self.root, bg="black", fg="gold", font=self.font, text="Gem cost")
         self.gem_cost_label.grid(column=2, row=1)
 
-        self.lvl_up_label = Label(self.root, bg="black",font=self.font, fg="green", text="+1 val")
-        self.lvl_up_label.grid(column=3, row=1)
+        self.beast_cost_label = Label(self.root, bg="black", fg="gold",font=self.font, text="Beast cost")
+        self.beast_cost_label.grid(column=3, row=1)
 
-        self.lvl_down_label = Label(self.root, bg="black",font=self.font, fg="red", text="-1 val")
-        self.lvl_down_label.grid(column=4, row=1)
+        self.qual_cost_label = Label(self.root, bg="black", fg="gold",font=self.font, text="Qual cost")
+        self.qual_cost_label.grid(column=4, row=1)
 
-        self.qual_up_label = Label(self.root, bg="black",font=self.font, fg="green", text="+qual val")
-        self.qual_up_label.grid(column=5, row=1)
-
-        self.qual_down_label = Label(self.root, bg="black",font=self.font, fg="red", text="-qual val")
-        self.qual_down_label.grid(column=6, row=1)
-
-        self.no_change_label = Label(self.root, bg="black", fg="gold", font=self.font, text="no change val")
-        self.no_change_label.grid(column=7, row=1)
+        self.maxlvl_value_label = Label(self.root, bg="black", fg="gold", font=self.font,text="lvl 5 cost")
+        self.maxlvl_value_label.grid(column=5, row=1)
 
         self.result_label = Label(self.root, bg="black", fg="gold", font=self.font, text="Avg return (c)")
         self.result_label.grid(column=8, row=1)
@@ -94,28 +82,28 @@ class VaalOrbCalculator:
         self.gem_name_input = Entry(self.root, bg="black", fg="gold", insertbackground="gold", font=self.font, width=self.fixed_width)
         self.gem_name_input.grid(column=1, row=2, pady=self.y_padding, padx=self.x_padding)
 
-        self.gem_cost_input = Entry(self.root, bg="black", fg="gold", insertbackground="gold", font=self.font, width=self.fixed_width)
+        self.gem_cost_input = Entry(self.root, bg="black", fg="gold", insertbackground="gold", font=self.font,
+                                    width=self.fixed_width)
         self.gem_cost_input.grid(column=2, row=2, pady=self.y_padding, padx=self.x_padding)
 
-        self.lvl_up_input = Entry(self.root, bg="black", fg="gold", insertbackground="gold", font=self.font, width=self.fixed_width)
-        self.lvl_up_input.grid(column=3, row=2, pady=self.y_padding, padx=self.x_padding)
+        self.beast_cost_input = Entry(self.root, bg="black", fg="gold", insertbackground="gold", font=self.font, width=self.fixed_width)
+        self.beast_cost_input.grid(column=3, row=2, pady=self.y_padding, padx=self.x_padding)
 
-        self.lvl_down_input = Entry(self.root, bg="black", fg="gold", insertbackground="gold", font=self.font, width=self.fixed_width)
-        self.lvl_down_input.grid(column=4, row=2, pady=self.y_padding, padx=self.x_padding)
+        self.qual_cost_input = Entry(self.root, bg="black", fg="gold", insertbackground="gold", font=self.font, width=self.fixed_width)
+        self.qual_cost_input.grid(column=4, row=2, pady=self.y_padding, padx=self.x_padding)
 
-        self.qual_up_input = Entry(self.root, bg="black", fg="gold", insertbackground="gold", font=self.font, width=self.fixed_width)
-        self.qual_up_input.grid(column=5, row=2, pady=self.y_padding, padx=self.x_padding)
+        self.maxlvl_value_input = Entry(self.root, bg="black", fg="gold", insertbackground="gold", font=self.font, width=self.fixed_width)
+        self.maxlvl_value_input.grid(column=5, row=2, pady=self.y_padding, padx=self.x_padding)
 
-        self.qual_down_input = Entry(self.root, bg="black", fg="gold", insertbackground="gold", font=self.font, width=self.fixed_width)
-        self.qual_down_input.grid(column=6, row=2, pady=self.y_padding, padx=self.x_padding)
-
-        self.no_change_input = Entry(self.root, bg="black", fg="gold", insertbackground="gold", font=self.font, width=self.fixed_width)
-        self.no_change_input.grid(column=7, row=2, pady=self.y_padding, padx=self.x_padding)
+        # filler columns to keep result and button in same position acoss views.
+        for i in range(self.empty_cells):
+            self.filler_cells.append(Label(self.root, width=self.fixed_width, bg="black", fg="gold", font=self.font, text=""))
+            self.filler_cells[-1].grid(column=6+i, row=2, pady=self.y_padding, padx=self.x_padding)
 
         self.result = Label(self.root, text="", bg="black", fg="gold", font=self.font, width=self.fixed_width)
         self.result.grid(column=8, row=2, pady=self.y_padding, padx=self.x_padding)
 
-        self.btn = Button(self.root, bg="black", fg="gold", font=self.font, command=self.calculateVaalOrb,
+        self.btn = Button(self.root, bg="black", fg="gold", font=self.font, command=self.calculate,
                           image=self.button_images[0], compound='center', relief=FLAT, text="Calculate",
                           activebackground="black", activeforeground="gold", highlightbackground="black",
                           highlightcolor="yellow", bd=0, pady=10)
@@ -148,25 +136,19 @@ class VaalOrbCalculator:
         self.btn.config(image=self.button_images[0])
         self.isHoveringButton = False
 
-    def calculateVaalOrb(self):
+    def calculate(self):
         try:
             res = -float(self.gem_cost_input.get())
-            res += float(self.lvl_up_input.get()) * self.vaal_orb_table["lvl_up"]
-            res += float(self.lvl_down_input.get()) * self.vaal_orb_table["lvl_down"]
-            res += float(self.qual_up_input.get()) * self.vaal_orb_table["qual_up"]
-            res += float(self.qual_down_input.get()) * self.vaal_orb_table["qual_down"]
-            res += float(self.no_change_input.get()) * self.vaal_orb_table["no_change"]
+            res -= float(self.beast_cost_input.get())*4
+            res -= float(self.qual_cost_input.get())
+            res += float(self.maxlvl_value_input.get())
             res = int(res * float(self.div_cost_input.get()))
-
             self.result.config(text=res)
         except:
             self.result.config(text="Invalid input.")
             return
 
-        # format: gem_name, gem cost, lvl_up, lvl_down, qual_up, qual_down, no_change, result, timestamp
-        log_string = self.gem_name_input.get() + "," + self.gem_cost_input.get() + "," + self.lvl_up_input.get() + "," + self.lvl_down_input.get() + "," + self.qual_up_input.get() + "," + self.qual_down_input.get() + "," + self.no_change_input.get() + "," + str(
-            res) + "," + str(datetime.datetime.now()) + "\n"
-
+        log_string = self.gem_name_input.get() + "," + self.gem_cost_input.get() + "," + self.beast_cost_input.get() + "," + self.qual_cost_input.get() + "," + self.maxlvl_value_input.get() + ", , ," + str(int(res)) + "," + str(datetime.datetime.now()) + "\n"
         # add result to file, or replace line if gem_name_input exists.
         try:
             f = open(self.log_path, "r")
@@ -191,23 +173,19 @@ class VaalOrbCalculator:
         self.logger.readLog(self.log_path)
 
     def forget(self):
-        self.vaal_orb_grid.grid_forget()
+        self.awakened_grid.grid_forget()
         self.div_cost_label.grid_forget()
         self.div_cost_input.grid_forget()
         self.gem_name_label.grid_forget()
         self.gem_name_input.grid_forget()
         self.gem_cost_label.grid_forget()
         self.gem_cost_input.grid_forget()
-        self.lvl_up_label.grid_forget()
-        self.lvl_up_input.grid_forget()
-        self.lvl_down_label.grid_forget()
-        self.lvl_down_input.grid_forget()
-        self.qual_up_label.grid_forget()
-        self.qual_up_input.grid_forget()
-        self.qual_down_label.grid_forget()
-        self.qual_down_input.grid_forget()
-        self.no_change_label.grid_forget()
-        self.no_change_input.grid_forget()
+        self.beast_cost_label.grid_forget()
+        self.beast_cost_input.grid_forget()
+        self.qual_cost_label.grid_forget()
+        self.qual_cost_input.grid_forget()
+        self.maxlvl_value_label.grid_forget()
+        self.maxlvl_value_input.grid_forget()
         self.result_label.grid_forget()
         self.result.grid_forget()
         self.btn.grid_forget()

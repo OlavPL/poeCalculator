@@ -1,43 +1,68 @@
 from tkinter import *
 from PIL import Image, ImageTk
-
+from AwakenedLevelingCalculator import AwakenedLevelingCalculator
 from Logger import Logger
 from VaalOrbCalculator import VaalOrbCalculator
 
 
-root = Tk()
-root.title("Calculator")
-root.geometry("1400x600")
-root.config(bg="darkgrey")
-root.grid_columnconfigure(0, weight=1)
-root.grid_columnconfigure(10, weight=5)
+class SceneManager:
+    def __init__(self):
+        self.currentView = None
+        self.background_image = None
+        self.background_image_label = None
+        self.root = self.newRoot()
+        self.logger = Logger(self.root)
+
+        self.ViewVaalOrbCalculator()
 
 
-log_lines = (10, 10)
-log_labels = []
+    def newRoot(self):
+        root = Tk()
+        root.title("Calculator")
+        root.geometry("1400x600")
+        root.config(bg="darkgrey")
+        root.grid_columnconfigure(0, weight=1)
+        root.grid_columnconfigure(10, weight=5)
 
-# menu = Menu(root)
-# item = Menu(menu)
-# item.add_command(label="New")
-# item.config(bg="lightgrey")
-# menu.add_cascade(label="File", menu=item)
-# root.config(menu=menu)
+        menu = Menu(root)
+        item = Menu(menu)
+        item.add_command(label="Vaal Orb", command=self.ViewVaalOrbCalculator)
+        item.add_command(label="Awakened Gem lvl", command=self.viewAwakenedLevelingCalculator)
+        item.config(bg="darkgrey")
+        menu.add_cascade(label="File", menu=item)
+        root.config(menu=menu)
 
-# Load the image file
-bg_image = Image.open("res/atziri_wallpaper_wide.png")
-# Resize the image to fit the window
-bg_image = bg_image.resize((3000, 600))
-# Convert the image to a format Tkinter can use
-bg_photo = ImageTk.PhotoImage(bg_image)
-# bg_photo = PhotoImage("res/atziri_wallpaper_crop.png", width=1100, height=600)
+        self.background_image_label = Label(root)
+        self.background_image_label.place(x=0, y=0, relwidth=1, relheight=1)
+        return root
 
-# Create a label with the image and place it at the bottom of the window
-bg_label = Label(root, image=bg_photo)
-bg_label.place(x=0, y=0, relwidth=1, relheight=1)
+    def ViewVaalOrbCalculator(self):
+        if self.currentView is not None:
+            self.currentView.forget()
+        if self.logger is not None:
+            self.logger.forget()
 
-logger = Logger(root)
+        self.setBackground(VaalOrbCalculator.background_image_path)
+        self.currentView = VaalOrbCalculator(self.root, self.logger)
 
-vaalOrbCalc = VaalOrbCalculator(root, logger)
-logger.readLog()
+    def viewAwakenedLevelingCalculator(self):
+        if self.currentView is not None:
+            self.currentView.forget()
+            self.logger.init_vaal_orb_log()
+        if self.logger is not None:
+            self.logger.forget()
+            self.logger.init_awakened_level_log()
 
-root.mainloop()
+        self.setBackground(AwakenedLevelingCalculator.background_image_path)
+        self.currentView = AwakenedLevelingCalculator(self.root, self.logger)
+
+    def setBackground(self, path):
+        img = Image.open(path)
+        img = img.resize((3000, 600))
+        self.background_image = ImageTk.PhotoImage(img)
+        self.background_image_label.config(image=self.background_image)
+
+
+# -- main --
+sceneManager = SceneManager()
+sceneManager.root.mainloop()
